@@ -1,0 +1,11 @@
+{
+	"name": "yokedevelopers/advanced-forms-mailchimp",
+	"description": "Wordpress plugin add-on for Advanced Custom Fields.",
+	"version": "1.0.0",
+	"type": "wordpress-plugin",
+	"keywords": ["wordpress", "mailchimp", "advanced-forms"],
+	"license": "MIT",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}
