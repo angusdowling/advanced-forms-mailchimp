@@ -51,20 +51,26 @@ class AF_MC_Register {
 
 			if( $field['key'] == get_field('field_form_mailchimp_subscriber_name', $form['post_id']) ) {
 				$name = $field['_input'];
+
+				if( preg_match('/\s/', $name) ) {
+					$name_split = explode(" ", $name);
+					$fname = $name_split[0];
+					$lname = end($name_split);
+				}
 			}
+		}
+
+		// Bail early
+		if(!isset($email) ||
+			!isset( $name ) ||
+			empty($api_key) ||
+			empty( $list_id ) ) {
+			return false;
 		}
 		
 		$auth    = base64_encode( 'user:'.$api_key );
-
 		$region  = explode('-', $api_key)[1];
-
-		if( preg_match('/\s/', $name) ) {
-			$name_split = explode(" ", $name);
-			$fname = $name_split[0];
-			$lname = end($name_split);
-		}
-
-		$data = array(
+		$data    = json_encode(array(
 			'apikey'        => $api_key,
 			'email_address' => $email,
 			'status'        => 'subscribed',
@@ -72,9 +78,7 @@ class AF_MC_Register {
 				'FNAME' => isset($fname) ? $fname : $name,
 				'LNAME' => isset($lname) ? $lname : ""
 			)
-		);
-
-		$json_data = json_encode($data);
+		));
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "https://{$region}.api.mailchimp.com/3.0/lists/${list_id}/members");
